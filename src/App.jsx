@@ -1,12 +1,13 @@
-import Header from './components/Header'
-import Hero from './components/Hero'
-import ModulesGrid from './components/ModulesGrid'
-import DashboardPreview from './components/DashboardPreview'
-import Footer from './components/Footer'
+import React from 'react';
+import Header from './components/Header';
+import Hero from './components/Hero';
+import ModulesGrid from './components/ModulesGrid';
+import DashboardPreview from './components/DashboardPreview';
+import Footer from './components/Footer';
 
 function App() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-white text-gray-900">
+    <div className="min-h-screen bg-gray-900 text-gray-100">
       <Header />
       <main>
         <Hero />
@@ -15,7 +16,7 @@ function App() {
       </main>
       <Footer />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

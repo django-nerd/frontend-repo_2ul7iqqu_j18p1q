@@ -1,122 +1,126 @@
-import { useMemo, useState } from 'react'
-import { BarChart3, Users, UserCheck, User, Calendar } from 'lucide-react'
+import React from 'react';
+import { Calendar, Users, User, Activity, Bell } from 'lucide-react';
 
-function Stat({ label, value, accent }) {
-  return (
-    <div className="p-4 rounded-xl border border-gray-200 bg-white/70">
-      <p className="text-xs text-gray-500 mb-1">{label}</p>
-      <p className={`text-2xl font-bold ${accent}`}>{value}</p>
+const Stat = ({ label, value, icon: Icon, accent }) => (
+  <div className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 p-4">
+    <div>
+      <p className="text-xs uppercase tracking-wide text-gray-400">{label}</p>
+      <p className="mt-1 text-2xl font-semibold text-white">{value}</p>
     </div>
-  )
-}
-
-function TinyBar({ boys = 0, girls = 0 }) {
-  const total = Math.max(1, boys + girls)
-  const boysPct = Math.round((boys / total) * 100)
-  const girlsPct = 100 - boysPct
-  return (
-    <div className="h-2 w-full bg-gray-100 rounded overflow-hidden flex">
-      <div className="bg-blue-500" style={{ width: `${boysPct}%` }} />
-      <div className="bg-pink-500" style={{ width: `${girlsPct}%` }} />
+    <div className={`rounded-lg p-2 ${accent}`}>
+      <Icon className="h-5 w-5" />
     </div>
-  )
-}
+  </div>
+);
 
-export default function DashboardPreview() {
-  const today = new Date().toISOString().slice(0, 10)
-  const [date, setDate] = useState(today)
+const TinyBar = ({ a, b }) => {
+  const total = Math.max(1, a + b);
+  const aw = Math.round((a / total) * 100);
+  const bw = 100 - aw;
+  return (
+    <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-white/10">
+      <div className="h-full bg-indigo-500" style={{ width: `${aw}%` }} />
+      <div className="-mt-2 h-2 bg-emerald-500" style={{ width: `${bw}%` }} />
+    </div>
+  );
+};
 
-  const data = useMemo(() => {
-    const seed = Number(date.replaceAll('-', ''))
-    // Fake but deterministic numbers for the chosen date to demonstrate reactivity
-    const rand = (n) => (seed % n) + Math.floor(n / 3)
-    return {
-      students: { total: 420 + rand(80), boys: 230 + rand(40), girls: 190 + rand(40) },
-      teachers: { total: 38 + (seed % 5), male: 18 + (seed % 3), female: 20 + (seed % 2) },
-      attendance: {
-        students: { present: 360 + (seed % 40), absent: 40 + (seed % 20) },
-        teachers: { present: 30 + (seed % 4), absent: 8 + (seed % 3) }
-      },
-      events: [
-        { id: 1, title: 'Science Fair', when: date },
-        { id: 2, title: 'PTA Meeting', when: date }
-      ],
-      announcements: [
-        { id: 1, title: 'Midterm schedule published', when: date },
-        { id: 2, title: 'Uniform drive next week', when: date }
-      ]
-    }
-  }, [date])
+const DashboardPreview = () => {
+  const [date, setDate] = React.useState(() => new Date().toISOString().slice(0, 10));
+
+  const data = React.useMemo(() => {
+    const seed = new Date(date).getDate();
+    const students = 520 + (seed % 30);
+    const teachers = 42 + (seed % 5);
+    const attendance = 80 + (seed % 15);
+    const male = Math.floor(students * (0.48 + (seed % 5) / 100));
+    const female = students - male;
+    const events = [
+      { time: '09:00', title: 'Math Quiz - Grade 8' },
+      { time: '12:30', title: 'PTA Committee' },
+      { time: '15:00', title: 'Football Practice' },
+    ];
+    const announcements = [
+      { title: 'Midterm schedule published' },
+      { title: 'New assignment template' },
+      { title: 'Science fair registrations open' },
+    ];
+    return { students, teachers, attendance, male, female, events, announcements };
+  }, [date]);
 
   return (
-    <section id="preview" className="py-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2"><BarChart3 size={22}/> Admin Dashboard Preview</h2>
-          <label className="flex items-center gap-2 text-sm">
-            <Calendar size={16} className="text-gray-500"/>
-            <input type="date" className="border rounded-lg px-3 py-2 text-gray-700" value={date} onChange={e=>setDate(e.target.value)} />
-          </label>
+    <section id="demo" className="mx-auto max-w-7xl px-4 py-12 md:py-16">
+      <div className="mb-6 flex items-end justify-between">
+        <div>
+          <h2 className="text-2xl font-semibold tracking-tight text-white md:text-3xl">Admin dashboard preview</h2>
+          <p className="mt-2 max-w-2xl text-sm text-gray-300 md:text-base">Change the date to see simulated data change across stats, charts, events and announcements.</p>
         </div>
-
-        <div className="grid md:grid-cols-4 gap-4 mb-6">
-          <Stat label="Total Students" value={data.students.total} accent="text-blue-600" />
-          <Stat label="Total Teachers" value={data.teachers.total} accent="text-indigo-600" />
-          <Stat label="Student Present" value={data.attendance.students.present} accent="text-emerald-600" />
-          <Stat label="Teacher Present" value={data.attendance.teachers.present} accent="text-teal-600" />
+        <div className="flex items-center gap-2">
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-gray-200 outline-none placeholder:text-gray-400"
+          />
         </div>
+      </div>
 
-        <div className="grid lg:grid-cols-3 gap-4 mb-6">
-          <div className="p-5 rounded-xl border border-gray-200 bg-white/70">
-            <p className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2"><Users size={18}/> Students by Sex</p>
-            <TinyBar boys={data.students.boys} girls={data.students.girls} />
-            <div className="mt-3 text-xs text-gray-600 flex items-center gap-3">
-              <span className="inline-flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-blue-500"/>Boys {data.students.boys}</span>
-              <span className="inline-flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-pink-500"/>Girls {data.students.girls}</span>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+        <Stat label="Students" value={data.students} icon={Users} accent="bg-indigo-500/20 text-indigo-300" />
+        <Stat label="Teachers" value={data.teachers} icon={User} accent="bg-emerald-500/20 text-emerald-300" />
+        <Stat label="Attendance" value={`${data.attendance}%`} icon={Activity} accent="bg-amber-500/20 text-amber-300" />
+        <Stat label="Events Today" value={data.events.length} icon={Calendar} accent="bg-pink-500/20 text-pink-300" />
+      </div>
+
+      <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div className="rounded-xl border border-white/10 bg-white/5 p-4 md:col-span-2">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-medium text-white">Gender distribution</h3>
+            <span className="text-xs text-gray-400">Students</span>
+          </div>
+          <div className="mt-3 grid grid-cols-2 gap-4">
+            <div>
+              <p className="text-sm text-gray-300">Male: {data.male}</p>
+              <TinyBar a={data.male} b={data.female} />
+            </div>
+            <div>
+              <p className="text-sm text-gray-300">Female: {data.female}</p>
+              <TinyBar a={data.female} b={data.male} />
             </div>
           </div>
-          <div className="p-5 rounded-xl border border-gray-200 bg-white/70">
-            <p className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2"><User size={18}/> Teachers by Sex</p>
-            <TinyBar boys={data.teachers.male} girls={data.teachers.female} />
-            <div className="mt-3 text-xs text-gray-600 flex items-center gap-3">
-              <span className="inline-flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-blue-500"/>Male {data.teachers.male}</span>
-              <span className="inline-flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-pink-500"/>Female {data.teachers.female}</span>
-            </div>
-          </div>
-          <div className="p-5 rounded-xl border border-gray-200 bg-white/70">
-            <p className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2"><UserCheck size={18}/> Attendance Today</p>
-            <div className="space-y-2 text-sm text-gray-700">
-              <div className="flex items-center justify-between"><span>Students</span><span className="font-semibold">{data.attendance.students.present}/{data.attendance.students.present + data.attendance.students.absent}</span></div>
-              <div className="flex items-center justify-between"><span>Teachers</span><span className="font-semibold">{data.attendance.teachers.present}/{data.attendance.teachers.present + data.attendance.teachers.absent}</span></div>
-            </div>
-          </div>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-4">
-          <div className="p-5 rounded-xl border border-gray-200 bg-white/70">
-            <p className="text-sm font-semibold text-gray-900 mb-3">Events</p>
-            <ul className="space-y-2 text-sm text-gray-700">
-              {data.events.map(e => (
-                <li key={e.id} className="flex items-center justify-between border-b last:border-0 border-gray-100 pb-2">
-                  <span>{e.title}</span>
-                  <span className="text-gray-500">{e.when}</span>
+        <div className="flex flex-col gap-4">
+          <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+            <div className="mb-2 flex items-center justify-between">
+              <h3 className="text-sm font-medium text-white">Events</h3>
+              <Calendar className="h-4 w-4 text-gray-400" />
+            </div>
+            <ul className="space-y-2">
+              {data.events.map((e) => (
+                <li key={e.title} className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2">
+                  <span className="text-sm text-gray-200">{e.title}</span>
+                  <span className="text-xs text-gray-400">{e.time}</span>
                 </li>
               ))}
             </ul>
           </div>
-          <div className="p-5 rounded-xl border border-gray-200 bg-white/70">
-            <p className="text-sm font-semibold text-gray-900 mb-3">Announcements</p>
-            <ul className="space-y-2 text-sm text-gray-700">
-              {data.announcements.map(a => (
-                <li key={a.id} className="flex items-center justify-between border-b last:border-0 border-gray-100 pb-2">
-                  <span>{a.title}</span>
-                  <span className="text-gray-500">{a.when}</span>
-                </li>
+
+          <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+            <div className="mb-2 flex items-center justify-between">
+              <h3 className="text-sm font-medium text-white">Announcements</h3>
+              <Bell className="h-4 w-4 text-gray-400" />
+            </div>
+            <ul className="space-y-2">
+              {data.announcements.map((a) => (
+                <li key={a.title} className="rounded-lg bg-white/5 px-3 py-2 text-sm text-gray-200">{a.title}</li>
               ))}
             </ul>
           </div>
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
+
+export default DashboardPreview;

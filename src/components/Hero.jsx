@@ -1,45 +1,53 @@
-import { Shield, BarChart3, Users, Calendar, MessageCircle } from 'lucide-react'
+import React from 'react';
+import { Rocket, Shield, Users } from 'lucide-react';
+import Spline from '@splinetool/react-spline';
 
-const Feature = ({ icon: Icon, title, desc }) => (
-  <div className="p-5 rounded-xl border border-gray-200 bg-white/60 backdrop-blur hover:shadow-md transition-shadow">
-    <div className="h-10 w-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center mb-3">
-      <Icon size={20} />
-    </div>
-    <h3 className="font-semibold text-gray-900 mb-1">{title}</h3>
-    <p className="text-sm text-gray-600">{desc}</p>
+const FeatureChip = ({ icon: Icon, text }) => (
+  <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-gray-200 backdrop-blur">
+    <Icon className="h-3.5 w-3.5 text-indigo-400" />
+    <span>{text}</span>
   </div>
-)
+);
 
-export default function Hero() {
+const Hero = () => {
   return (
     <section className="relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24 grid lg:grid-cols-2 gap-10 items-center">
-        <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-50 text-green-700 text-xs font-medium mb-4">
-            <Shield size={14} /> Role-based Access • Multi-tenant Ready
+      <div className="absolute inset-0">
+        <Spline scene="https://prod.spline.design/LFe7dKryHuFZb54x/scene.splinecode" style={{ width: '100%', height: '100%' }} />
+      </div>
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-gray-900 via-gray-900/80 to-gray-900" />
+
+      <div className="relative z-10 mx-auto max-w-7xl px-4 py-20 md:py-28">
+        <div className="mx-auto max-w-3xl text-center">
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-1 text-sm text-indigo-200">
+            <Shield className="h-4 w-4" />
+            Role-based School Management SaaS
           </div>
-          <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-gray-900 mb-4">
-            Modern School Management, built as reusable modules
+          <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
+            Manage your entire school in one modular platform
           </h1>
-          <p className="text-lg text-gray-600 mb-6">
-            Admin, Teacher, Student, and Parent roles with secure permissions. Attendance, assignments, exams, results, subjects, classes, lessons, events, messages, and announcements — all modular and easy to reuse.
+          <p className="mt-4 text-base leading-relaxed text-gray-300 sm:text-lg">
+            Powerful tools for administrators, teachers, students, and parents. Attendance, assignments, exams, results, classes, subjects, messaging, announcements, and more.
           </p>
-          <div className="flex flex-wrap gap-3">
-            <a href="#preview" className="inline-flex items-center gap-2 px-5 py-3 rounded-lg text-white bg-gradient-to-r from-indigo-600 to-blue-600 font-semibold shadow hover:shadow-md transition-shadow">
-              Explore Live Preview
+
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+            <FeatureChip icon={Users} text="Admin • Teacher • Student • Parent" />
+            <FeatureChip icon={Rocket} text="Modular & reusable" />
+            <FeatureChip icon={Shield} text="Secure & scalable" />
+          </div>
+
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <a href="#modules" className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white shadow hover:bg-indigo-500">
+              Explore Modules
             </a>
-            <a href="#features" className="inline-flex items-center gap-2 px-5 py-3 rounded-lg text-indigo-700 bg-indigo-50 font-semibold hover:bg-indigo-100">
-              See Features
+            <a href="#demo" className="inline-flex items-center justify-center rounded-lg border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-gray-200 hover:bg-white/10">
+              View Demo Dashboard
             </a>
           </div>
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <Feature icon={BarChart3} title="Analytics" desc="Role-aware dashboard with gender-based graphs and date filters." />
-          <Feature icon={Users} title="Profiles" desc="Detailed pages for teachers, students, and parents." />
-          <Feature icon={Calendar} title="Attendance" desc="Teacher marks students; admin marks teachers." />
-          <Feature icon={MessageCircle} title="Messaging" desc="Daily limits, class-aware routing, and admin overrides." />
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
+
+export default Hero;
